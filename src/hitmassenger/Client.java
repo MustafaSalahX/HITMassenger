@@ -3,21 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hitmassenger;
+package HITMassenger;
 
 import data.Data;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
- * @author RavenPC
+ * @author mario
  */
 public class Client extends javax.swing.JFrame {
+
+    static Socket s ;
+    static DataInputStream din;
+    static DataOutputStream dout;
+    private DefaultListModel mod = new DefaultListModel();
 
     /**
      * Creates new form Server
@@ -39,12 +53,21 @@ public class Client extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txt = new javax.swing.JTextArea();
         txtName = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<String>();
-        jButton2 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        send_file = new javax.swing.JButton();
         txtIp = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        connect = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        msg_area = new javax.swing.JTextArea();
+        msg_text = new javax.swing.JTextField();
+        send_msg = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        List = new javax.swing.JList<>();
+        save = new javax.swing.JButton();
+        open = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -52,31 +75,93 @@ public class Client extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         txt.setEditable(false);
+        txt.setBackground(new java.awt.Color(255, 255, 255));
         txt.setColumns(20);
         txt.setRows(5);
         jScrollPane1.setViewportView(txt);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Image", "File" }));
-
-        jButton2.setBackground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Send");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Image", "File" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jComboBox1ActionPerformed(evt);
             }
         });
 
+        send_file.setIcon(new javax.swing.ImageIcon(getClass().getResource("/HITMassenger/icons8-sent-25.png"))); // NOI18N
+        send_file.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                send_fileActionPerformed(evt);
+            }
+        });
+
+        txtIp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIpActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel2.setText("IP");
 
-        jButton1.setText("Connect");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        connect.setText("Connect");
+        connect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                connectActionPerformed(evt);
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Client");
+
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/HITMassenger/icons8-back-arrow-20.png"))); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        msg_area.setEditable(false);
+        msg_area.setBackground(new java.awt.Color(255, 255, 255));
+        msg_area.setColumns(20);
+        msg_area.setRows(5);
+        jScrollPane2.setViewportView(msg_area);
+
+        msg_text.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msg_textActionPerformed(evt);
+            }
+        });
+
+        send_msg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/HITMassenger/icons8-sent-25.png"))); // NOI18N
+        send_msg.setToolTipText("");
+        send_msg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                send_msgActionPerformed(evt);
+            }
+        });
+
+        List.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ListMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(List);
+
+        save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/HITMassenger/icons8-save-25.png"))); // NOI18N
+        save.setText("Save");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
+
+        open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/HITMassenger/icons8-folder-25.png"))); // NOI18N
+        open.setText("Open");
+        open.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -86,23 +171,43 @@ public class Client extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtIp, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1)
-                        .addGap(6, 6, 6))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(connect)
+                        .addGap(20, 20, 20))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txtName)
+                                        .addGap(10, 10, 10)
+                                        .addComponent(send_file))
+                                    .addComponent(jScrollPane1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(open, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(save)
+                                .addGap(0, 130, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(msg_text, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(send_msg)))
+                        .addGap(18, 18, 18))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -110,29 +215,46 @@ public class Client extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
+                        .addComponent(connect)
                         .addComponent(txtIp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(msg_text)
+                                .addComponent(send_msg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtName)
+                                    .addComponent(send_file, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(12, 12, 12)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(1, 1, 1)
+                                        .addComponent(open, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
+                                    .addComponent(save, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jComboBox1)))))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -141,22 +263,23 @@ public class Client extends javax.swing.JFrame {
 
     private Socket socket;
     private ObjectOutputStream out;
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    
+    private void connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectActionPerformed
         try {
             socket = new Socket(txtIp.getText().trim(), 9999);
             txt.append("Connect success ...\n");
             out = new ObjectOutputStream(socket.getOutputStream());
             Data data = new Data();
             data.setStatus("new");
-            data.setName("Laing raven");
+            data.setName("TeamX");
             out.writeObject(data);
             out.flush();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_connectActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void send_fileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_send_fileActionPerformed
         try {
             JFileChooser ch = new JFileChooser();
             int c = ch.showOpenDialog(this);
@@ -177,7 +300,91 @@ public class Client extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
         }
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_send_fileActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+       MainPage ob = new MainPage();
+       ob.setVisible(true);
+       setVisible(false);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void msg_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msg_textActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_msg_textActionPerformed
+
+    private void send_msgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_send_msgActionPerformed
+        // TODO add your handling code here:]
+        try {
+    String msgout = "";
+    msgout = msg_text.getText().trim();
+    dout.writeUTF(msgout);
+}
+catch (Exception e){
+    
+}
+    }//GEN-LAST:event_send_msgActionPerformed
+
+    private void ListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ListMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            if (!List.isSelectionEmpty()) {
+                if (SwingUtilities.isLeftMouseButton(evt)) {
+                    open();
+                } else if (SwingUtilities.isRightMouseButton(evt)) {
+                    save();
+                }
+
+            }
+        }
+    }//GEN-LAST:event_ListMouseClicked
+
+    private void save() {
+        Data data = (Data) mod.getElementAt(List.getSelectedIndex());
+        JFileChooser ch = new JFileChooser();
+        int c = ch.showSaveDialog(this);
+        if (c == JFileChooser.APPROVE_OPTION) {
+            try {
+                FileOutputStream out = new FileOutputStream(ch.getSelectedFile());
+                out.write(data.getFile());
+                out.close();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void open() {
+        Data data = (Data) mod.getElementAt(List.getSelectedIndex());
+        if (data.getStatus().equals("Image")) {
+            ShowImage obj = new ShowImage(this, true);
+            ImageIcon icon = new ImageIcon(data.getFile());
+            obj.set(icon);
+            obj.setVisible(true);
+        }
+    }
+    
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        // TODO add your handling code here:
+        if (!List.isSelectionEmpty()) {
+            save();
+        }
+    }//GEN-LAST:event_saveActionPerformed
+
+    private void openActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openActionPerformed
+        // TODO add your handling code here:
+         if (!List.isSelectionEmpty()) {
+           open();
+        }
+    }//GEN-LAST:event_openActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void txtIpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIpActionPerformed
 
     /**
      * @param args the command line arguments
@@ -215,16 +422,37 @@ public class Client extends javax.swing.JFrame {
                 new Client().setVisible(true);
             }
         });
+        try{ 
+            s = new Socket("127.0.0.1",999);
+            din = new DataInputStream(s.getInputStream());
+            dout = new DataOutputStream(s.getOutputStream());
+            String msgin="";
+            while(!msgin.equals("exit")){
+            msgin = din.readUTF();
+            msg_area.setText(msg_area.getText().trim()+"\n Server: "+msgin);
+            }
+                    } catch (IOException ex) {   
+          Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+      }   
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JList<String> List;
+    private javax.swing.JButton connect;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private static javax.swing.JTextArea msg_area;
+    private javax.swing.JTextField msg_text;
+    private javax.swing.JButton open;
+    private javax.swing.JButton save;
+    private javax.swing.JButton send_file;
+    private javax.swing.JButton send_msg;
     private javax.swing.JTextArea txt;
     private javax.swing.JTextField txtIp;
     private javax.swing.JTextField txtName;

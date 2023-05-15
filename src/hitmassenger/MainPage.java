@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hitmassenger;
+package HITMassenger;
 
 import java.io.DataInputStream;
 import java.net.ServerSocket;
@@ -11,7 +11,7 @@ import java.net.Socket;
 
 /**
  *
- * @author mosta
+ * @author mario
  */
 public class MainPage extends javax.swing.JFrame {
 
@@ -37,28 +37,27 @@ public class MainPage extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        Send = new javax.swing.JButton();
-        Recive = new javax.swing.JButton();
+        Send1 = new javax.swing.JButton();
+        Recive1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        jLabel1.setFont(new java.awt.Font("Script MT Bold", 0, 14)); // NOI18N
         jLabel1.setText("Select What to Do  :");
 
-        Send.setBackground(new java.awt.Color(255, 255, 255));
-        Send.setText("Send");
-        Send.addActionListener(new java.awt.event.ActionListener() {
+        Send1.setText("Send");
+        Send1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SendActionPerformed(evt);
+                Send1ActionPerformed(evt);
             }
         });
 
-        Recive.setBackground(new java.awt.Color(255, 255, 255));
-        Recive.setText("Recive");
-        Recive.addActionListener(new java.awt.event.ActionListener() {
+        Recive1.setText("Recive");
+        Recive1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ReciveActionPerformed(evt);
+                Recive1ActionPerformed(evt);
             }
         });
 
@@ -67,27 +66,26 @@ public class MainPage extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 72, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(Recive, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                            .addComponent(Send, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(65, 65, 65))
+                    .addComponent(Recive1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Send1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(68, 68, 68))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
-                .addComponent(Send)
-                .addGap(29, 29, 29)
-                .addComponent(Recive)
-                .addGap(39, 39, 39))
+                .addGap(37, 37, 37)
+                .addComponent(Send1)
+                .addGap(36, 36, 36)
+                .addComponent(Recive1)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -104,17 +102,17 @@ public class MainPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void SendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendActionPerformed
-       client_side ob = new client_side();
-       ob.setVisible(true);
-       setVisible(false);
-    }//GEN-LAST:event_SendActionPerformed
+    private void Send1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Send1ActionPerformed
+       Client ob = new Client();
+        ob.setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_Send1ActionPerformed
 
-    private void ReciveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReciveActionPerformed
-     server_side ob = new server_side();
-       ob.setVisible(true);
-       setVisible(false);
-    }//GEN-LAST:event_ReciveActionPerformed
+    private void Recive1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Recive1ActionPerformed
+        Server ob = new Server();
+        ob.setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_Recive1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -152,8 +150,8 @@ public class MainPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Recive;
-    private javax.swing.JButton Send;
+    private javax.swing.JButton Recive1;
+    private javax.swing.JButton Send1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

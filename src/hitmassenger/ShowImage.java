@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hitmassenger;
+package HITMassenger;
 
 import javax.swing.ImageIcon;
 
 /**
  *
- * @author RavenPC
+ * @author mario
  */
 public class ShowImage extends javax.swing.JDialog {
 
